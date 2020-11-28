@@ -9,7 +9,7 @@
 import UIKit
 
 protocol CoinManagerDelegate {
-    func didUpdatePrice(_ coinManager: CoinManager, price: String)
+    func didUpdatePrice(_ coinManager: CoinManager, exchangeRateData: ExchangeRateData)
     func didFailWithError(_ error: Error)
 }
 
@@ -19,7 +19,7 @@ struct CoinManager {
     let baseURL = "https://rest.coinapi.io/v1/exchangerate/BTC"
     let apiKey = APIKey().apiKey //replace with api key from coinapi.io
     
-    let currencyArray = ["AUD", "BRL","CAD","CNY","EUR","GBP","HKD","IDR","ILS","INR","JPY","MXN","NOK","NZD","PLN","RON","RUB","SEK","SGD","USD","ZAR"]
+    let currencyArray = ["JPY", "AUD", "BRL","CAD","CNY","EUR","GBP","HKD","IDR","ILS","INR","MXN","NOK","NZD","PLN","RON","RUB","SEK","SGD","USD","ZAR"]
 
     
     func fetchExchangeRate(for currency: String) {
@@ -43,8 +43,14 @@ struct CoinManager {
                 }
 
                 if let safeData = data{
-                    //let decoder = JSONDecoder()
-                   // print(safeData)
+                    let decoder = JSONDecoder()
+                    
+                    do{
+                        let exchangeRateData = try decoder.decode(ExchangeRateData.self, from: safeData)
+                        delegate?.didUpdatePrice(self, exchangeRateData: exchangeRateData)
+                    } catch{
+                        delegate?.didFailWithError(error)
+                    }
                 }
             }
             //start the tast

@@ -19,8 +19,10 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         pickerView.delegate = self
+        coinManager.delegate = self
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        coinManager.fetchExchangeRate(for: coinManager.currencyArray[0])
     }
 
 
@@ -69,12 +71,29 @@ extension ViewController: UIPickerViewDataSource {
     
 }
 
+
 // MARK: - UIPickerViewDelegate
 
-
-extension ViewController: UIPickerViewDelegate{
+extension ViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
 //        print("\(coinManager.currencyArray[row])")
         coinManager.fetchExchangeRate(for: coinManager.currencyArray[row])
+    }
+}
+
+
+// MARK: - CoinManagerDelegate
+
+extension ViewController: CoinManagerDelegate {
+    func didUpdatePrice(_ coinManager: CoinManager, exchangeRateData: ExchangeRateData) {
+        
+        DispatchQueue.main.async { [self] in
+            priceLabel.text = exchangeRateData.price
+            currencyLabel.text = exchangeRateData.asset_id_quote
+        }
+    }
+    
+    func didFailWithError(_ error: Error) {
+        print(error)
     }
 }

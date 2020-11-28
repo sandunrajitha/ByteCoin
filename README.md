@@ -1,6 +1,6 @@
 #  ByteCoin
 
-
+Bitcoin price ticker. The app will give you the latest Bitcoin prices in all the popular, traded currencies
 
 ## Screens
 

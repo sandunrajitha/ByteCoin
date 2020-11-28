@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct ExchangeRateData {
+struct ExchangeRateData: Codable {
     var asset_id_quote: String
     var rate: Double
     
